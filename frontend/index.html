@@ -19,59 +19,64 @@
     <link rel="stylesheet" href="./css/index.css" />
   </head>
   <body>
-    myTrakr
-    <main>
-      <form action="">
-        New Account:
-        <input type="text" />
-        <button>Add new account</button>
-      </form>
-      <form action="">
-        New Transaction: Deposit
-        <input type="radio" />
-        Withdraw
-        <input type="radio" />
-        Transfer
-        <input type="radio" />
-        Account:
-        <select></select>
+      <h1>myTrakr</h1>
+      <div class="container">
+        <main>
+          <form action="">
+            New Account:
+            <input type="text" />
+            <button>Add new account</button>
+          </form>
+          <form action="">
+            <label for=""> New Transaction: Deposit</label>
+            <input type="radio" />
 
-        From:
-        <select></select>
+            <label for="">Withdraw</label>
+            <input type="radio" />
 
-        To:
-        <select></select>
-        Category:
-        <select></select>
-        <input type="text" />
-        <button type="button">Add new category</button>
+            <label for=""> Transfer</label>
+            <input type="radio" />
 
-        Description
-        <input type="text" />
-
-        Amount:
-        <input type="number" />
-
-        <button>Add transaction</button>
-      </form>
-
-      Account summary
-      <ul></ul>
-      Filter by account:
-      <select></select>
-      <table>
-        <tr>
-          <th>Id</th>
-          <th>Username</th>
-          <th>Transaction Type</th>
-          <th>Category</th>
-          <th>Description</th>
-          <th>Amount</th>
-          <th>From</th>
-          <th>To</th>
-        </tr>
-      </table>
-    </main>
+            <label for="">Account:</label>
+            <select></select>
+    
+            <label for="">From:</label>
+            <select></select>
+    
+            To:
+            <select></select><br>
+            Category:
+            <select></select>
+            <input type="text" />
+            <button type="button">Add new category</button><br>
+    
+            Description
+            <input type="text" />
+    
+            Amount:
+            <input type="number" />
+    
+            <button>Add transaction</button>
+          </form>
+    
+          Account summary
+          <ul></ul>
+          Filter by account:
+          <select></select>
+          <table>
+            <tr>
+              <th>Id</th>
+              <th>Username</th>
+              <th>Transaction Type</th>
+              <th>Category</th>
+              <th>Description</th>
+              <th>Amount</th>
+              <th>From</th>
+              <th>To</th>
+            </tr>
+          </table>
+        </main>
+      </div>
     <script src="./js/helpers/Account.js"></script>
     <script src="./js/helpers/Category.js"></script>
     <script src="./js/helpers/Common.js"></script>
