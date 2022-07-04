@@ -10,4 +10,10 @@ export const addAccount = (account) => {
   return newAccount;
 };
 
+$(document).ready(() => {
+  $('button').on('click',() => {
+    console.log('clicked jquery')
+  })
+})
+
 export default { getAccounts, addAccount };
