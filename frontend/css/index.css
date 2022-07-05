@@ -22,3 +22,12 @@ h1{
 form{
     padding: 10px 0 10px 0;
 }
+
+table{
+    margin-top: 16px;
+}
+
+table th{
+    padding: 10px 20px;
+    border: 1px solid black
+}
