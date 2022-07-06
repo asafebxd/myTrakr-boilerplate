@@ -8,18 +8,36 @@ $(() => {
     dataType: 'json',
   }).done((data) => {
     console.log('data ajax get', data);
+    data.forEach(accounts => {
+      const newAccount = new Account (
+        accounts.username,
+        accounts.id
+      ) 
+      users.push(newAccount)
+        
+    });
   });  
+  
     $('#newAccount').on('submit', (e) => {
       e.preventDefault()
       console.log('clicked') 
         const inValue = $("#accountInput").val();
+        if (inValue === "") {
+          alert("insert value")
+          return
+        }
         // const inValue = $("[name=accountName]").val()
-        let isExisting = false 
-        for (let i = 0; i < user.lenght; i++ ) {
-          if (i === inValue) {
-            let isExisting = true
+        let exist = false
+        console.log(users);
+        for (let i = 0; i < users.length; i++ ) {
+          console.log(users[i].username);
+          if (users[i].username === inValue) {
             alert("The user already exist")
+            exist = true
           }
+        }
+        if (exist) {
+          return
         }
         const newAccount = {username:inValue};
         $.ajax({
@@ -33,8 +51,10 @@ $(() => {
         });
       });
 
+
+
       $("[name=radioValue]").change(() => {
-        console.log($("[name=radioValue]:checked").val());
+        console.log($("[name=radioValue]:checked".val())) ;
         if($("[name=radioValue]:checked").val() === "deposit" || $("[name=radioValue]:checked").val() === "withdraw"){
           $("#fromFild").css("display", "none");
           $("#toFild").css("display", "none");
