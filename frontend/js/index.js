@@ -2,6 +2,13 @@ users = []
 
 $(() => {
   //Start coding here!
+  $.ajax({
+    method: 'get',
+    url: 'http://localhost:3000/accounts',
+    dataType: 'json',
+  }).done((data) => {
+    console.log('data ajax get', data);
+  });  
     $('#newAccount').on('submit', (e) => {
       e.preventDefault()
       console.log('clicked') 
