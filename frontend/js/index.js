@@ -32,5 +32,19 @@ $(() => {
           console.log('data ajax post', data);
         });
       });
+
+      $("[name=radioValue]").change(() => {
+        console.log($("[name=radioValue]:checked").val());
+        if($("[name=radioValue]:checked").val() === "deposit" || $("[name=radioValue]:checked").val() === "withdraw"){
+          $("#fromFild").css("display", "none");
+          $("#toFild").css("display", "none");
+          $("#account").css("display", "block");
+        }else{
+          $("#account").css("display", "none");
+          $("#fromFild").css("display", "block");
+          $("#toFild").css("display", "block");
+        }
+      })
+
     });  
 

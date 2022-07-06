@@ -28,23 +28,33 @@
             <button  >Add new account</button>
           </form>
           <form action="">
-            <label for=""> New Transaction: Deposit</label>
-            <input type="radio" />
+            New Transaction: 
+
+            <label for=""> Deposit</label>
+            <input name="radioValue" value="deposit" type="radio" />
 
             <label for="">Withdraw</label>
-            <input type="radio" />
+            <input name="radioValue" value="withdraw" type="radio" />
 
             <label for=""> Transfer</label>
-            <input type="radio" />
+            <input name="radioValue" value="transfer" type="radio" /> <br>
 
-            <label for="">Account:</label>
-            <select></select>
-    
-            <label for="">From:</label>
-            <select></select>
-    
-            To:
-            <select></select><br>
+            <div id="account">
+              <label for="">Account:</label>
+              <select></select>
+            </div>
+     
+            <div id="fromFild" >
+              <label for="">From:</label>
+              <select></select>
+            </div>
+  
+            <div id="toFild" >
+              <label for="">To:</label>
+              <select></select><br>
+            </div>
+          
+
             Category:
             <select></select>
             <input type="text" />
