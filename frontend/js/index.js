@@ -1,3 +1,5 @@
+import { json } from "express/lib/response";
+
 users = []
 
 $(() => {
@@ -27,7 +29,7 @@ $(() => {
       });
 
       $("[name=radioValue]").change(() => {
-        console.log($("[name=radioValue]:checked").val());
+        // console.log($("[name=radioValue]:checked").val());
         if($("[name=radioValue]:checked").val() === "deposit" || $("[name=radioValue]:checked").val() === "withdraw"){
           $("#fromFild").css("display", "none");
           $("#toFild").css("display", "none");
@@ -37,7 +39,39 @@ $(() => {
           $("#fromFild").css("display", "block");
           $("#toFild").css("display", "block");
         }
-      })
+      });
+
+      $("#newCategory").hide();
+
+      $("#chooseCategory").change(() => {
+        if($('#chooseCategory').val() === "addNew"){
+          $("#newCategory").show();
+        }else{
+          $("#newCategory").hide();
+        }
+      });
+
+      $("#newCatBtn").click(() =>{
+        if($("#newCatInput").val() === ""){
+          alert("Please insert a Name for a new Category")
+        }
+
+      newCategory = $('#newCatInput').val()
+      $.ajax({
+        method: 'post',
+        url: 'http://localhost:3000/categories',
+        data: json.stringify({newCategory}),
+        dataType: 'json',
+      }).done((data) => {
+        console.log('categories ajax', data)
+        
+      }
+      )
+
+      });
+
+
+
 
     });  
 
