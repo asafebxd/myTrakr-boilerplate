@@ -23,6 +23,15 @@ form{
     padding: 10px 0 10px 0;
 }
 
+button{
+    cursor: pointer;
+    border:none;
+    background-color: black;
+    color: white;
+    border-radius: 20px;
+    padding: 2px 15px;
+}
+
 table{
     margin-top: 16px;
 }
