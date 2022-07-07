@@ -1,7 +1,7 @@
 class Transaction {
-  constructor(amount, account) {
+  constructor(amount, accountId) {
     this.amount = amount;
-    this.account = account;
+    this.accountId = accountId;
   }
   commit() {
     if (this.value < 0 && this.amount > this.account.balance) return;
@@ -21,3 +21,11 @@ class Deposit extends Transaction {
     return this.amount;
   }
 }
+
+class Transfer extends Transaction{
+  constructor (amount, accountId, accountIdFrom, accountIdTo){
+    super(amount, accountId);
+    this.accountIdFrom = accountIdFrom;
+    this.accountIdTo = accountIdTo;
+  }
+} 
