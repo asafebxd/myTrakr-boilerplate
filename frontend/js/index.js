@@ -1,3 +1,4 @@
+
 users = []
 
 $(() => {
@@ -59,17 +60,14 @@ $(() => {
       $.ajax({
         method: 'post',
         url: 'http://localhost:3000/categories',
-        data: json.stringify({newCategory}),
+        data: JSON.stringify({newCategory}),
         dataType: 'json',
+        contentType: 'application/JSON',
       }).done((data) => {
-        $("#chooseCategory").append('<option>{newCategory}</option>');
-        // $("#chooseCategory").append(new Option(newCategory));
+        $("#chooseCategory").prepend(`<option>${data.name}</option>`);
         $("#newCategory").hide();
         $(newCategory).val("")
-
-
-      }
-      )
+      })
 
       });
 
