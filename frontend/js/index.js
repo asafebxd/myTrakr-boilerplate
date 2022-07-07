@@ -72,6 +72,14 @@ $(() => {
       });
 
 
+      $('#newTransaction').on('submit', (e) => {
+        e.preventDefault()
+        console.log("clicked")
+
+        if($('#transactionAmount').val() <= 0) return false
+        if(!$("[name=radioValue]:checked")) return false
+
+      });
 
 
     });  

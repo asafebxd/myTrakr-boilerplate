@@ -27,7 +27,7 @@
             <input name="accountName" id="accountInput" type="text" />
             <button  >Add new account</button>
           </form>
-          <form action="">
+          <form id="newTransaction" action="">
             New Transaction: 
 
             <label for=""> Deposit</label>
@@ -41,7 +41,7 @@
 
             <div id="account">
               <label for="">Account:</label>
-              <select></select>
+              <select required></select>
             </div>
      
             <div id="fromFild" >
@@ -55,8 +55,8 @@
             </div>
           
             <label for="">Category:</label> 
-            <select id="chooseCategory">
-              <option value="">Choose a Category</option>
+            <select id="chooseCategory" required>
+              <option value="" disabled selected>Choose a Category</option>
               <option name="optionNewCat" value="addNew">New Category</option>
             </select>
 
@@ -70,7 +70,7 @@
             <input type="text" />
     
             Amount:
-            <input type="number" />
+            <input id="transactionAmount" type="number" />
     
             <button>Add transaction</button>
           </form>
