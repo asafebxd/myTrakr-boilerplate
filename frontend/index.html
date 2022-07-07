@@ -41,17 +41,25 @@
 
             <div id="account">
               <label for="">Account:</label>
-              <select required></select>
+
+              <select required class="accountWrapper">
+                  <option value="Accounts">Accounts</option>
+              </select>
+
             </div>
      
             <div id="fromFild" >
               <label for="">From:</label>
-              <select></select>
+              <select class="accountWrapper">
+                <option value="From">From</option>
+              </select>
             </div>
   
             <div id="toFild" >
               <label for="">To:</label>
-              <select></select><br>
+              <select class="accountWrapper">
+                <option value="To">To</option>
+              </select><br>
             </div>
           
             <label for="">Category:</label> 
@@ -67,10 +75,10 @@
 
     
             Description
-            <input type="text" />
+            <input id="descVal" type="text" />
     
             Amount:
-            <input id="transactionAmount" type="number" />
+            <input id="amountVal" type="number" />
     
             <button>Add transaction</button>
           </form>
@@ -78,7 +86,9 @@
           Account summary
           <ul></ul>
           Filter by account:
-          <select></select>
+          <select class="accountWrapper">
+            <option value="Filter">Filter</option>
+          </select>
           <table>
             <tr>
               <th>Id</th>
@@ -89,6 +99,16 @@
               <th>Amount</th>
               <th>From</th>
               <th>To</th>
+            </tr>
+            <tr>
+              <td class="idWrap"></td>
+              <td class="usernameWrap"></td>
+              <td class="transWrap"></td>
+              <td class="catWrap"></td>
+              <td class="descWrap"></td>
+              <td class="amountWrap"></td>
+              <td class="fromWrap"></td>
+              <td class="toWrap"></td>
             </tr>
           </table>
         </main>
