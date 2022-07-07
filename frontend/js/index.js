@@ -32,13 +32,15 @@ $(() => {
         for (let i = 0; i < users.length; i++ ) {
           console.log(users[i].username);
           if (users[i].username === inValue) {
-            alert("The user already exist")
             exist = true
           }
         }
         if (exist) {
+          alert("The user already exist")
           return
         }
+        
+
         const newAccount = {username:inValue};
         $.ajax({
           method: 'post',
@@ -48,6 +50,7 @@ $(() => {
           contentType: 'application/json'
         }).done((data) => {
           console.log('data ajax post', data);
+          $(".accountWrapper").append(`<option>${inValue}</option>`)
         });
       });
 
