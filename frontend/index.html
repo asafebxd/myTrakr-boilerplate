@@ -27,7 +27,7 @@
             <input name="accountName" id="accountInput" type="text" />
             <button  >Add new account</button>
           </form>
-          <form action="">
+          <form id="newTransaction" action="">
             New Transaction: 
 
             <label for=""> Deposit</label>
@@ -73,10 +73,10 @@
 
     
             Description
-            <input type="text" />
+            <input id="descVal" type="text" />
     
             Amount:
-            <input type="number" />
+            <input id="amountVal" type="number" />
     
             <button>Add transaction</button>
           </form>
@@ -97,6 +97,16 @@
               <th>Amount</th>
               <th>From</th>
               <th>To</th>
+            </tr>
+            <tr>
+              <td class="idWrap"></td>
+              <td class="usernameWrap"></td>
+              <td class="transWrap"></td>
+              <td class="catWrap"></td>
+              <td class="descWrap"></td>
+              <td class="amountWrap"></td>
+              <td class="fromWrap"></td>
+              <td class="toWrap"></td>
             </tr>
           </table>
         </main>

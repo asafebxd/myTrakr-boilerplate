@@ -1,3 +1,4 @@
+import transactions from "../../src/transactions";
 
 users = []
 
@@ -42,7 +43,11 @@ $(() => {
         }
         
 
-        const newAccount = {username:inValue};
+        const newAccount = {
+              username:"",
+              transactions:[]
+            };
+
         $.ajax({
           method: 'post',
           data: JSON.stringify({newAccount}),
@@ -54,7 +59,47 @@ $(() => {
           $(".accountWrapper").append(`<option>${inValue}</option>`)
         });
       });
+      
+      
+      $.ajax({
+        method: 'get',
+        url: 'http://localhost:3000/transactions',
+        dataType: 'json',
+      }).done((data) => {
+        console.log('data ajax get', data);
+      });  
 
+      $('#newTransaction').on('submit', (e) => {
+        e.preventDefault()
+        console.log("clicked")
+        const amountVal = $("#amountVal").val();
+        // const descVal = $("#descVal").val();
+
+        // const newDescription = {username:inValue};
+        const newTransaction = {
+            amountVal,
+            accountId:"", // account ID for Deposits or Withdraws
+            accountIdFrom:"", // sender ID if type = 'Transfer', otherwise null
+            accountIdTo:"" // receiver ID if type = 'Transfer', otherwise null
+            // all info from form
+          }
+        }),
+        
+        $.ajax({
+          method: 'post',
+          url: 'http://localhost:3000/transaction',
+          data: JSON.stringify({newTransaction}),
+          dataType: 'json',
+          contentType: 'application/json'
+        }).done((data) => {
+          console.log('data ajax post', data);
+          forEach(newTransaction => {
+            newAccount[1].push(newTransaction)
+          });
+        });
+      });
+
+      
 
 
       $("[name=radioValue]").change(() => {
@@ -104,5 +149,5 @@ $(() => {
 
 
 
-    });  
+    
 
