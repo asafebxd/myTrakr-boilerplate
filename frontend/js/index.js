@@ -206,8 +206,23 @@ $(() => {
         e.preventDefault()
         console.log("clicked")
 
-        if($('#amountVal').val() <= 0) return false
-        if(!$("[name=radioValue]:checked")) return false
+        if($('#amountVal').val() <= 0) {
+          alert("Chosse a value")
+          return false
+        }
+        if(!$("[name=radioValue]:checked")) {
+          alert("Chosse a value")
+          return false
+        }
+        if($("[name=radioValue]:checked").val() === "transfer" ){
+          if($("#fromId").val() === "" || $("#toId").val() === "")
+          if($("#fromId").val() === $("#toId").val())
+          return false
+        }
+
+        // if($("[name=radioValue]:checked").val() === "transfer" || $("[name=radioValue]:checked").val() === "withdraw"){
+
+        // }
 
       });
 
