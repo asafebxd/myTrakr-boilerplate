@@ -193,7 +193,7 @@ $(() => {
         console.log("clicked")
 
         if($('#amountVal').val() <= 0) return false
-        if(!$("[name=radioValue]:checked")) return false
+        // if(!$("[name=radioValue]:checked")) return false
 
       });
 
