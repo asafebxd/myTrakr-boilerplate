@@ -70,22 +70,31 @@ $(() => {
         console.log('data ajax get Trans', data);
         data.forEach(transaction => { 
           transaction.forEach(transDetails => {
+            console.log(transDetails.transType);
+            let to = ""
+            let from = ""
             let username = ""
             for (let i = 0; i < users.length; i++) {
               if (users[i].id == transDetails.accountId) {
                 username = users[i].username
+              }
+              if (users[i].id == transDetails.accountIdFrom) {
+                from = users[i].username
+              }
+              if (users[i].id == transDetails.accountIdTo) {
+                to = users[i].username
               }
             }
             $(".tableData").append(`
           <tr>
             <td class="idWrap">${transDetails.id}</td>
             <td class="usernameWrap">${username}</td>
-            <td class="transWrap"></td>
+            <td class="transWrap">${transDetails.transType}</td>
             <td class="catWrap">${transDetails.category}</td>
             <td class="descWrap">${transDetails.descripcion}</td>  
             <td class="amountWrap">${transDetails.amountVal}</td>
-            <td class="fromWrap">${transDetails.accountIdFrom}</td>
-            <td class="toWrap">${transDetails.accountIdTo}</td>
+            <td class="fromWrap">${from}</td>
+            <td class="toWrap">${to}</td>
           </tr>
           `)
           })
@@ -94,13 +103,10 @@ $(() => {
     })
 
       $('#newTransaction').on('submit', (e) => {
-        e.preventDefault()
-        console.log("#accChangeId") 
-        // const descVal = $("#descVal").val();
-        // const newDescription = {username:inValue};
+        e.preventDefault() 
         const newTransaction = {
             category: $("#chooseCategory").val(),
-            // transType: $("").val(),
+            transType: $("[name=radioValue").val(),
             descripcion: $("#descVal").val(),
             amountVal: $("#amountVal").val(),
             accountId: $("#accChangeId").val(),// account ID for Deposits or Withdraws
@@ -119,22 +125,31 @@ $(() => {
           }).done((data) => {
             console.log('data transactions ajax post', data);
             data.forEach(transaction => {
+              let from = ""
+              let to = ""
               let username = ""
               for (let i = 0; i < users.length; i++) {
+                console.log(transaction.accountIdFrom);
                 if (users[i].id == transaction.accountId) {
                   username = users[i].username
+                }
+                if (users[i].id == transaction.accountIdFrom) {
+                  from = users[i].username
+                }
+                if (users[i].id == transaction.accountIdTo) {
+                  to = users[i].username
                 }
               }
               $(".tableData").append(`
               <tr>
                 <td class="idWrap">${transaction.id}</td>
                 <td class="usernameWrap">${username}</td>
-                <td class="transWrap"></td></td>
+                <td class="transWrap">${transaction.transType}</td>
                 <td class="catWrap">${transaction.category}</td>
                 <td class="descWrap">${transaction.descripcion}</td>  
                 <td class="amountWrap">${transaction.amountVal}</td>
-                <td class="fromWrap">${transaction.accountIdFrom}</td>
-                <td class="toWrap">${transaction.accountIdTo}</td>
+                <td class="fromWrap">${from}</td>
+                <td class="toWrap">${to}</td>
               </tr>
               `)
               for (let i = 0; i < users.length; i++) {
@@ -151,8 +166,28 @@ $(() => {
       
         $("#filterAcc").on("change", (e) => {
           e.preventDefault();
-          const filterAcc =  $("#filterAcc  ").val()
-          console.log(filterAcc)
+          const filterAcc =  $("#filterAcc").val()
+          $.ajax({
+            method: 'post',
+            url: 'http://localhost:3000/transaction',
+            data: JSON.stringify({newTransaction}),
+            dataType: 'json',
+            contentType: 'application/json'
+          }).done((data) => {
+            console.log('data filter ajax post', data);
+            $(".tableData").append(`
+            <tr>
+              <td class="idWrap">${transDetails.id}</td>
+              <td class="usernameWrap">${username}</td>
+              <td class="transWrap">${transDetails.transType}</td>
+              <td class="catWrap">${transDetails.category}</td>
+              <td class="descWrap">${transDetails.descripcion}</td>  
+              <td class="amountWrap">${transDetails.amountVal}</td>
+              <td class="fromWrap">${from}</td>
+              <td class="toWrap">${to}</td>
+            </tr>
+              `)
+            })
         })
       
 
@@ -167,6 +202,7 @@ $(() => {
           $("#fromFild").css("display", "block");
           $("#toFild").css("display", "block");
         }
+
       });
 
       $("#newCategory").hide();
