@@ -57,6 +57,7 @@ $(() => {
           contentType: 'application/json'
         }).done((data) => {
           console.log('data ajax post', data);
+          users.push(data)
           $(".accountWrapper").append(`<option value = ${data.id}>${data.username}</option>`)
         });
       });
@@ -166,28 +167,29 @@ $(() => {
       
         $("#filterAcc").on("change", (e) => {
           e.preventDefault();
-          const filterAcc =  $("#filterAcc").val()
-          $.ajax({
-            method: 'post',
-            url: 'http://localhost:3000/transaction',
-            data: JSON.stringify({newTransaction}),
-            dataType: 'json',
-            contentType: 'application/json'
-          }).done((data) => {
-            console.log('data filter ajax post', data);
+          filterAcc = ""
+          const filteredInfo = $("#filterAcc").val();
+          users.forEach(filterData  => {  
+            let username = ""
+            let to = ""
+            let from = ""
+            if (filterData.id == filteredInfo) {
+              filterAcc = filterData.transactions
+            }
+            console.log(filterAcc);
             $(".tableData").append(`
             <tr>
-              <td class="idWrap">${transDetails.id}</td>
+              <td class="idWrap">${filterData.id}</td>
               <td class="usernameWrap">${username}</td>
-              <td class="transWrap">${transDetails.transType}</td>
-              <td class="catWrap">${transDetails.category}</td>
-              <td class="descWrap">${transDetails.descripcion}</td>  
-              <td class="amountWrap">${transDetails.amountVal}</td>
+              <td class="transWrap">${filterData.transType}</td>
+              <td class="catWrap">${filterData.category}</td>
+              <td class="descWrap">${filterData.descripcion}</td>  
+              <td class="amountWrap">${filterData.amountVal}</td>
               <td class="fromWrap">${from}</td>
               <td class="toWrap">${to}</td>
             </tr>
-              `)
-            })
+            `)
+          })
         })
       
 
