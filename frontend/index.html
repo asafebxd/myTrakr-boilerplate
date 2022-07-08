@@ -41,21 +41,21 @@
 
             <div id="account">
               <label for="">Account:</label>
-              <select class="accountWrapper">
+              <select id="AccountId" class="accountWrapper">
                   <option value="Accounts">Accounts</option>
               </select>
             </div>
      
             <div id="fromFild" >
               <label for="">From:</label>
-              <select class="accountWrapper">
+              <select id="fromId" class="accountWrapper">
                 <option value="From">From</option>
               </select>
             </div>
   
             <div id="toFild" >
               <label for="">To:</label>
-              <select class="accountWrapper">
+              <select id="toId" class="accountWrapper">
                 <option value="To">To</option>
               </select><br>
             </div>
@@ -84,10 +84,10 @@
           Account summary
           <ul></ul>
           Filter by account:
-          <select class="accountWrapper">
+          <select id="filterAcc" class="accountWrapper">
             <option value="Filter">Filter</option>
           </select>
-          <table>
+          <table class="tableData">
             <tr>
               <th>Id</th>
               <th>Username</th>
@@ -99,14 +99,7 @@
               <th>To</th>
             </tr>
             <tr>
-              <td class="idWrap"></td>
-              <td class="usernameWrap"></td>
-              <td class="transWrap"></td>
-              <td class="catWrap"></td>
-              <td class="descWrap"></td>
-              <td class="amountWrap"></td>
-              <td class="fromWrap"></td>
-              <td class="toWrap"></td>
+              
             </tr>
           </table>
         </main>
