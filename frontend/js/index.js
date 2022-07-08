@@ -114,7 +114,7 @@ $(() => {
               $(".tableData").append(`
               <tr>
                 <td class="idWrap">${transaction.accountId}</td>
-                <td class="usernameWrap">${transaction.username}</td>
+                <td class="usernameWrap"></td>
                 <td class="transWrap"></td>
                 <td class="catWrap"></td>
                 <td class="descWrap">${transaction.descripcion}</td>  
@@ -206,9 +206,9 @@ $(() => {
           return false
         }
 
-        if($("[name=radioValue]:checked").val() === "transfer" || $("[name=radioValue]:checked").val() === "withdraw"){
-          
-        }
+        // if($("[name=radioValue]:checked").val() === "transfer" || $("[name=radioValue]:checked").val() === "withdraw"){
+
+        // }
 
       });
 
