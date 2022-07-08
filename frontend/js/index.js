@@ -68,34 +68,42 @@ $(() => {
         dataType: 'json',
       }).done((data) => {
         console.log('data ajax get Trans', data);
-        data.forEach(transaction => {
-          transaction.forEach(accDetails => {
+        data.forEach(transaction => { 
+          transaction.forEach(transDetails => {
+            let username = ""
+            for (let i = 0; i < users.length; i++) {
+              if (users[i].id == transDetails.accountId) {
+                username = users[i].username
+              }
+            }
             $(".tableData").append(`
           <tr>
-            <td class="idWrap">${accDetails.accountId}</td>
-            <td class="usernameWrap">${accDetails.username}</td>
+            <td class="idWrap">${transDetails.id}</td>
+            <td class="usernameWrap">${username}</td>
             <td class="transWrap"></td>
-            <td class="catWrap"></td>
-            <td class="descWrap">${accDetails.descripcion}</td>  
-            <td class="amountWrap">${accDetails.amountVal}</td>
-            <td class="fromWrap">${accDetails.accountIdFrom}</td>
-            <td class="toWrap">${accDetails.accountIdTo}</td>
+            <td class="catWrap">${transDetails.category}</td>
+            <td class="descWrap">${transDetails.descripcion}</td>  
+            <td class="amountWrap">${transDetails.amountVal}</td>
+            <td class="fromWrap">${transDetails.accountIdFrom}</td>
+            <td class="toWrap">${transDetails.accountIdTo}</td>
           </tr>
           `)
           })
         })
       });  
+    })
 
       $('#newTransaction').on('submit', (e) => {
         e.preventDefault()
-        console.log("clicked") 
+        console.log("#accChangeId") 
         // const descVal = $("#descVal").val();
-
         // const newDescription = {username:inValue};
         const newTransaction = {
+            category: $("#chooseCategory").val(),
+            // transType: $("").val(),
             descripcion: $("#descVal").val(),
             amountVal: $("#amountVal").val(),
-            accountId: $("#AccountId").val(),// account ID for Deposits or Withdraws
+            accountId: $("#accChangeId").val(),// account ID for Deposits or Withdraws
             accountIdFrom:$("#fromId").val(), // sender ID if type = 'Transfer', otherwise null
             accountIdTo:$("#toId").val() // receiver ID if type = 'Transfer', otherwise null
             // all info from form
@@ -111,12 +119,18 @@ $(() => {
           }).done((data) => {
             console.log('data transactions ajax post', data);
             data.forEach(transaction => {
+              let username = ""
+              for (let i = 0; i < users.length; i++) {
+                if (users[i].id == transaction.accountId) {
+                  username = users[i].username
+                }
+              }
               $(".tableData").append(`
               <tr>
-                <td class="idWrap">${transaction.accountId}</td>
-                <td class="usernameWrap">${transaction.username}</td>
-                <td class="transWrap"></td>
-                <td class="catWrap"></td>
+                <td class="idWrap">${transaction.id}</td>
+                <td class="usernameWrap">${username}</td>
+                <td class="transWrap"></td></td>
+                <td class="catWrap">${transaction.category}</td>
                 <td class="descWrap">${transaction.descripcion}</td>  
                 <td class="amountWrap">${transaction.amountVal}</td>
                 <td class="fromWrap">${transaction.accountIdFrom}</td>
@@ -132,13 +146,13 @@ $(() => {
             console.log(users)
           });
         });
-        })
+        
 
       
         $("#filterAcc").on("change", (e) => {
           e.preventDefault();
           const filterAcc =  $("#filterAcc  ").val()
-          console.log(filterAcc);
+          console.log(filterAcc)
         })
       
 
@@ -180,7 +194,7 @@ $(() => {
         dataType: 'json',
         contentType: 'application/JSON',
       }).done((data) => {
-        $("#chooseCategory").prepend(`<option>${data.name}</option>`);
+        $("#chooseCategory").prepend(`<option value=${data.name}>${data.name}</option>`);
         $("#newCategory").hide();
         $(newCategory).val("")
       })
