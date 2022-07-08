@@ -41,9 +41,11 @@
 
             <div id="account">
               <label for="">Account:</label>
-              <select id="AccountId" class="accountWrapper">
+
+              <select class="accountWrapper"  required>
                   <option value="Accounts">Accounts</option>
               </select>
+
             </div>
      
             <div id="fromFild" >
@@ -61,8 +63,8 @@
             </div>
           
             <label for="">Category:</label> 
-            <select id="chooseCategory">
-              <option value="">Choose a Category</option>
+            <select id="chooseCategory" required>
+              <option value="" disabled selected>Choose a Category</option>
               <option name="optionNewCat" value="addNew">New Category</option>
             </select>
 
