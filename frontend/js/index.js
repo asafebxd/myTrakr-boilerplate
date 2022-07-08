@@ -1,5 +1,3 @@
-// import transactions from "../../src/transactions";
-
 users = []
 
 $(() => {
@@ -9,7 +7,6 @@ $(() => {
     url: 'http://localhost:3000/accounts',
     dataType: 'json',
   }).done((data) => {
-    console.log('data ajax get', data);
     data.forEach(accounts => {
       const newAccount = new Account (  
         accounts.username,
@@ -23,7 +20,6 @@ $(() => {
   
     $('#newAccount').on('submit', (e) => {
       e.preventDefault()
-      console.log('clicked') 
         const inValue = $("#accountInput").val();
         if (inValue === "") {
           alert("insert value")
@@ -31,9 +27,7 @@ $(() => {
         }
         // const inValue = $("[name=accountName]").val()
         let exist = false
-        console.log(users);
         for (let i = 0; i < users.length; i++ ) {
-          console.log(users[i].username);
           if (users[i].username === inValue) {
             exist = true
           }
@@ -42,7 +36,6 @@ $(() => {
           alert("The user already exist")
           return
         }
-        
 
         const newAccount = {
               username: inValue,
@@ -56,8 +49,8 @@ $(() => {
           dataType: 'json',
           contentType: 'application/json'
         }).done((data) => {
-          console.log('data ajax post', data);
           $(".accountWrapper").append(`<option value = ${data.id}>${data.username}</option>`)
+          users.push(data)
         });
       });
       
@@ -67,10 +60,8 @@ $(() => {
         url: 'http://localhost:3000/transactions',
         dataType: 'json',
       }).done((data) => {
-        console.log('data ajax get Trans', data);
         data.forEach(transaction => { 
           transaction.forEach(transDetails => {
-            console.log(transDetails.transType);
             let to = ""
             let from = ""
             let username = ""
@@ -114,7 +105,6 @@ $(() => {
             accountIdTo:$("#toId").val() // receiver ID if type = 'Transfer', otherwise null
             // all info from form
           }
-          console.log("new transaction",newTransaction)
 
           $.ajax({
             method: 'post',
@@ -123,13 +113,11 @@ $(() => {
             dataType: 'json',
             contentType: 'application/json'
           }).done((data) => {
-            console.log('data transactions ajax post', data);
             data.forEach(transaction => {
               let from = ""
               let to = ""
               let username = ""
               for (let i = 0; i < users.length; i++) {
-                console.log(transaction.accountIdFrom);
                 if (users[i].id == transaction.accountId) {
                   username = users[i].username
                 }
@@ -158,7 +146,6 @@ $(() => {
                 } 
               }
             });
-            console.log(users)
           });
         });
         
@@ -174,7 +161,6 @@ $(() => {
             dataType: 'json',
             contentType: 'application/json'
           }).done((data) => {
-            console.log('data filter ajax post', data);
             $(".tableData").append(`
             <tr>
               <td class="idWrap">${transDetails.id}</td>
@@ -218,9 +204,7 @@ $(() => {
       $("#newCatBtn").click(() =>{
         if($("#newCatInput").val() === ""){
           alert("Please insert a Name for a new Category")
-      }//else{
-      //   $("#newCategory").hide();
-      // }
+      }
 
      const newCategory = $('#newCatInput').val()
       $.ajax({
@@ -240,19 +224,19 @@ $(() => {
 
       $('#newTransaction').on('submit', (e) => {
         e.preventDefault()
-        console.log("clicked")
 
         if($('#amountVal').val() <= 0) {
-          alert("Chosse a value")
+          alert("The amout value should be greater than 0")
           return false
         }
         if(!$("[name=radioValue]:checked")) {
-          alert("Chosse a value")
+          alert("Chosse a type of transaction")
           return false
         }
         if($("[name=radioValue]:checked").val() === "transfer" ){
           if($("#fromId").val() === "" || $("#toId").val() === "")
           if($("#fromId").val() === $("#toId").val())
+          alert("Chosse a type of transaction")
           return false
         }
 
