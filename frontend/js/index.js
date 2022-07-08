@@ -1,4 +1,4 @@
-import transactions from "../../src/transactions";
+// import transactions from "../../src/transactions";
 
 users = []
 
@@ -11,10 +11,11 @@ $(() => {
   }).done((data) => {
     console.log('data ajax get', data);
     data.forEach(accounts => {
-      const newAccount = new Account (
+      const newAccount = new Account (  
         accounts.username,
         accounts.id
       ) 
+      $(".accountWrapper").append(`<option value = ${accounts.id}>${accounts.username}</option>`)
       users.push(newAccount)
         
     });
@@ -44,7 +45,7 @@ $(() => {
         
 
         const newAccount = {
-              username:"",
+              username: inValue,
               transactions:[]
             };
 
@@ -56,49 +57,89 @@ $(() => {
           contentType: 'application/json'
         }).done((data) => {
           console.log('data ajax post', data);
-          $(".accountWrapper").append(`<option>${inValue}</option>`)
+          $(".accountWrapper").append(`<option value = ${data.id}>${data.username}</option>`)
         });
       });
       
-      
+
       $.ajax({
         method: 'get',
         url: 'http://localhost:3000/transactions',
         dataType: 'json',
       }).done((data) => {
-        console.log('data ajax get', data);
+        console.log('data ajax get Trans', data);
+        data.forEach(transaction => {
+          transaction.forEach(accDetails => {
+            $(".tableData").append(`
+          <tr>
+            <td class="idWrap">${accDetails.accountId}</td>
+            <td class="usernameWrap">${accDetails.username}</td>
+            <td class="transWrap"></td>
+            <td class="catWrap"></td>
+            <td class="descWrap">${accDetails.descripcion}</td>  
+            <td class="amountWrap">${accDetails.amountVal}</td>
+            <td class="fromWrap">${accDetails.accountIdFrom}</td>
+            <td class="toWrap">${accDetails.accountIdTo}</td>
+          </tr>
+          `)
+          })
+        })
       });  
 
       $('#newTransaction').on('submit', (e) => {
         e.preventDefault()
-        console.log("clicked")
-        const amountVal = $("#amountVal").val();
+        console.log("clicked") 
         // const descVal = $("#descVal").val();
 
         // const newDescription = {username:inValue};
         const newTransaction = {
-            amountVal,
-            accountId:"", // account ID for Deposits or Withdraws
-            accountIdFrom:"", // sender ID if type = 'Transfer', otherwise null
-            accountIdTo:"" // receiver ID if type = 'Transfer', otherwise null
+            descripcion: $("#descVal").val(),
+            amountVal: $("#amountVal").val(),
+            accountId: $("#AccountId").val(),// account ID for Deposits or Withdraws
+            accountIdFrom:$("#fromId").val(), // sender ID if type = 'Transfer', otherwise null
+            accountIdTo:$("#toId").val() // receiver ID if type = 'Transfer', otherwise null
             // all info from form
           }
-        }),
-        
-        $.ajax({
-          method: 'post',
-          url: 'http://localhost:3000/transaction',
-          data: JSON.stringify({newTransaction}),
-          dataType: 'json',
-          contentType: 'application/json'
-        }).done((data) => {
-          console.log('data ajax post', data);
-          forEach(newTransaction => {
-            newAccount[1].push(newTransaction)
+          console.log("new transaction",newTransaction)
+
+          $.ajax({
+            method: 'post',
+            url: 'http://localhost:3000/transaction',
+            data: JSON.stringify({newTransaction}),
+            dataType: 'json',
+            contentType: 'application/json'
+          }).done((data) => {
+            console.log('data transactions ajax post', data);
+            data.forEach(transaction => {
+              $(".tableData").append(`
+              <tr>
+                <td class="idWrap">${transaction.accountId}</td>
+                <td class="usernameWrap">${transaction.username}</td>
+                <td class="transWrap"></td>
+                <td class="catWrap"></td>
+                <td class="descWrap">${transaction.descripcion}</td>  
+                <td class="amountWrap">${transaction.amountVal}</td>
+                <td class="fromWrap">${transaction.accountIdFrom}</td>
+                <td class="toWrap">${transaction.accountIdTo}</td>
+              </tr>
+              `)
+              for (let i = 0; i < users.length; i++) {
+                if (users[i].id == transaction.accountId) {
+                  users[i].transactions.push(transaction)
+                } 
+              }
+            });
+            console.log(users)
           });
         });
-      });
+        })
 
+      
+        $("#filterAcc").on("change", (e) => {
+          e.preventDefault();
+          const filterAcc =  $("#filterAcc  ").val()
+          console.log(filterAcc);
+        })
       
 
 
