@@ -14,6 +14,9 @@ $(() => {
       ) 
       $(".accountWrapper").append(`<option value = ${accounts.id}>${accounts.username}</option>`)
       users.push(newAccount)
+      $("#listSummary").append(`
+          <li id="${newAccount.username}">Account Name: ${newAccount.username} | Current Balance: <span>${newAccount.balance}</span></li>`);
+
         
     });
   });  
@@ -49,10 +52,16 @@ $(() => {
           dataType: 'json',
           contentType: 'application/json'
         }).done((data) => {
-          users.push(data)
+          const newAccount = new Account(data.username,data.id, data.transactions)
+          users.push(newAccount);
           $(".accountWrapper").append(`<option value = ${data.id}>${data.username}</option>`)
-          users.push(data)
+
+          $("#listSummary").append(`
+          <li id="${newAccount.username}">Account Name: ${newAccount.username} | Current Balance: <span>${newAccount.balance}</span></li>`);
+  
         });
+
+
       });
       
 
@@ -106,7 +115,6 @@ $(() => {
             accountIdTo:$("#toId").val() // receiver ID if type = 'Transfer', otherwise null
             // all info from form
           }
-
           $.ajax({
             method: 'post',
             url: 'http://localhost:3000/transaction',
@@ -115,6 +123,16 @@ $(() => {
             contentType: 'application/json'
           }).done((data) => {
             data.forEach(transaction => {
+
+              let newTransaction;
+              if(transaction.transType === 'deposit'){
+                newTransaction = new Deposit(transaction.amountVal, transaction.accountId);
+              }else if(transaction.transType === 'withdraw'){
+                newTransaction = new Withdrawal(transaction.amountVal, transaction.accountId);
+              }else {
+                newTransaction = new Transfer(transaction.amountVal, transaction.accountId);
+              }
+
               let from = ""
               let to = ""
               let username = ""
@@ -146,12 +164,15 @@ $(() => {
                   users[i].transactions.push(transaction)
                 } 
               }
+              console.log('username',transaction)
+              const currentBalance = $(`#${username} span`).text()
+              $(`#${username} span`).text(Number(currentBalance) + Number(transaction.amountVal))
+
+       
             });
           });
         });
         
-
-      
         $("#filterAcc").on("change", (e) => {
           e.preventDefault();
           filterAcc = ""
@@ -178,8 +199,6 @@ $(() => {
             `)
           })
         })
-      
-
 
       $("[name=radioValue]").change(() => {
         if($("[name=radioValue]:checked").val() === "deposit" || $("[name=radioValue]:checked").val() === "withdraw"){
@@ -223,6 +242,18 @@ $(() => {
       })
 
       });
+const categories = []
+      $.ajax({
+        method: 'get',
+        url: 'http://localhost:3000/categories',
+        dataType: 'json',
+        contentType: 'application/JSON',
+      }).done((data) => {
+        data.forEach(category => {
+          categories.push(category);
+          $("#chooseCategory").prepend(`<option value=${category.name}>${category.name}</option>`);
+        })
+      });
 
 
       $('#newTransaction').on('submit', (e) => {
@@ -243,9 +274,9 @@ $(() => {
           return false
         }
 
-        // if($("[name=radioValue]:checked").val() === "transfer" || $("[name=radioValue]:checked").val() === "withdraw"){
+        if($("[name=radioValue]:checked").val() === "transfer" || $("[name=radioValue]:checked").val() === "withdraw"){
 
-        // }
+        }
 
       });
 

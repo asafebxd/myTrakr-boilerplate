@@ -28,4 +28,7 @@ class Transfer extends Transaction{
     this.accountIdFrom = accountIdFrom;
     this.accountIdTo = accountIdTo;
   }
+  get value() {
+    return this.amount;
+  }
 } 

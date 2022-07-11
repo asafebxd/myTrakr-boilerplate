@@ -83,11 +83,12 @@
             <button>Add transaction</button>
           </form>
     
-          Account summary
-          <ul></ul>
+          Account summary:
+          <ul id="listSummary"></ul>
           Filter by account:
           <select id="filterAcc" class="accountWrapper">
-            <option value="Filter">Filter</option>
+            <option value="Filter" disabled selected>Select an account</option>
+            <option value="filterAll">Filter All</option>
           </select>
           <table class="tableData">
             <tr>
