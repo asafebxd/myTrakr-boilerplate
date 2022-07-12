@@ -107,7 +107,7 @@ $(() => {
         e.preventDefault() 
         const newTransaction = {
             category: $("#chooseCategory").val(),
-            transType: $("[name=radioValue").val(),
+            transType: $("[name=radioValue]:checked").val(),
             descripcion: $("#descVal").val(),
             amountVal: $("#amountVal").val(),
             accountId: $("#accChangeId").val(),// account ID for Deposits or Withdraws
@@ -130,7 +130,7 @@ $(() => {
               }else if(transaction.transType === 'withdraw'){
                 newTransaction = new Withdrawal(transaction.amountVal, transaction.accountId);
               }else {
-                newTransaction = new Transfer(transaction.amountVal, transaction.accountId);
+                newTransaction = new Transfer(transaction.amountVal, transaction.accountId, transaction.accountIdFrom, transaction.accountIdTo);
               }
 
               let from = ""
@@ -164,9 +164,9 @@ $(() => {
                   users[i].transactions.push(transaction)
                 } 
               }
-              console.log('username',transaction)
+          
               const currentBalance = $(`#${username} span`).text()
-              $(`#${username} span`).text(Number(currentBalance) + Number(transaction.amountVal))
+              $(`#${username} span`).text(Number(currentBalance) + Number(newTransaction.value))
 
        
             });
@@ -205,6 +205,8 @@ $(() => {
           $("#fromFild").css("display", "none");
           $("#toFild").css("display", "none");
           $("#account").css("display", "block");
+          $(".selected").val("").change()
+
         }else{
           $("#account").css("display", "none");
           $("#fromFild").css("display", "block");
@@ -255,7 +257,7 @@ const categories = []
         })
       });
 
-
+      console.log($("[name=radioValue]:checked"));
       $('#newTransaction').on('submit', (e) => {
         e.preventDefault()
 
@@ -263,10 +265,11 @@ const categories = []
           alert("The amout value should be greater than 0")
           return false
         }
-        if(!$("[name=radioValue]:checked")) {
+        if(!$("[name=radioValue]:checked").val()) {
           alert("Chosse a type of transaction")
           return false
         }
+
         if($("[name=radioValue]:checked").val() === "transfer" ){
           if($("#fromId").val() === "" || $("#toId").val() === "")
           if($("#fromId").val() === $("#toId").val())
@@ -274,9 +277,20 @@ const categories = []
           return false
         }
 
-        if($("[name=radioValue]:checked").val() === "transfer" || $("[name=radioValue]:checked").val() === "withdraw"){
-
+        if($("[name=radioValue]:chacked").val() === "transfer"){
+          //pegar o balance de from e checar se eh maior ou igual ao valor da transacao
+          alert("SOORY! You dont have enough balance")
         }
+        if($("[name=radioValue]:checked").val() === "withdraw"){
+          //pegaro o balance de account e chegar se eh maior ou igual ao valor da transacao
+          alert("SOORY! You dont have enough balance")
+        }
+
+        // if($("[name=radioValue]:checked").val() === "transfer" || $("[name=radioValue]:checked").val() === "withdraw"){
+          
+        //   if(!currentBalance >= transDetails.accountIdFrom)
+        //   alert("SOORY! You dont have enough balance")
+        // }
 
       });
 
