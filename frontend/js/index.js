@@ -104,7 +104,7 @@ $(() => {
     })
 
       $('#newTransaction').on('submit', (e) => {
-        e.preventDefault() 
+        e.preventDefault()
         const newTransaction = {
             category: $("#chooseCategory").val(),
             transType: $("[name=radioValue]:checked").val(),
@@ -115,6 +115,58 @@ $(() => {
             accountIdTo:$("#toId").val() // receiver ID if type = 'Transfer', otherwise null
             // all info from form
           }
+          console.log(newTransaction)
+
+          let currentBalance = ""
+
+          if($("[name=radioValue]:checked").val() === "transfer"){
+            let username = ""
+            users.forEach(user => {
+              if(user.id == $("#fromId").val()){
+                username = user.username
+              }
+            })
+
+            currentBalance = Number($(`#${username} span`).text())
+
+            if(currentBalance < Number($("#amountVal").val()))
+            alert("SOORY! You dont have enough balance")
+          }
+          if($("[name=radioValue]:checked").val() === "withdraw"){
+            let username = ""
+            users.forEach(user => {
+              if(user.id == $("#accChangeId").val()){
+                username = user.username
+              }
+            })
+            currentBalance = Number($(`#${username} span`).text())
+
+            if(currentBalance < Number($("#amountVal").val()))
+            alert("SOORY! You dont have enough balance")
+          }
+
+          if($('#amountVal').val() <= 0) {
+            alert("The amout value should be greater than 0")
+            return
+          }
+
+          if(!$("[name=radioValue]:checked").val()) {
+            alert("Chosse a type of transaction")
+            return 
+          }
+
+          if($("[name=radioValue]:checked").val() === "transfer" ){
+            if($("#fromId").val() === "" || $("#toId").val() === ""){
+              alert("Chosse one account before transfer")
+              return
+            }
+            if($("#fromId").val() === $("#toId").val()){
+              alert("From can not be the same as to")
+              return
+            }
+      
+          }
+
           $.ajax({
             method: 'post',
             url: 'http://localhost:3000/transaction',
@@ -123,7 +175,7 @@ $(() => {
             contentType: 'application/json'
           }).done((data) => {
             data.forEach(transaction => {
-
+              console.log(data)
               let newTransaction;
               if(transaction.transType === 'deposit'){
                 newTransaction = new Deposit(transaction.amountVal, transaction.accountId);
@@ -148,7 +200,7 @@ $(() => {
                 }
               }
               $(".tableData").append(`
-              <tr>
+                const currentBalance = $(${username} span).text()  <tr>
                 <td class="idWrap">${transaction.id}</td>
                 <td class="usernameWrap">${username}</td>
                 <td class="transWrap">${transaction.transType}</td>
@@ -167,7 +219,6 @@ $(() => {
           
               const currentBalance = $(`#${username} span`).text()
               $(`#${username} span`).text(Number(currentBalance) + Number(newTransaction.value))
-
        
             });
           });
@@ -200,7 +251,7 @@ $(() => {
           })
         })
 
-      $("[name=radioValue]").change(() => {
+      $("[name=radioValue]").click(() => {
         if($("[name=radioValue]:checked").val() === "deposit" || $("[name=radioValue]:checked").val() === "withdraw"){
           $("#fromFild").css("display", "none");
           $("#toFild").css("display", "none");
@@ -257,42 +308,7 @@ const categories = []
         })
       });
 
-      console.log($("[name=radioValue]:checked"));
-      $('#newTransaction').on('submit', (e) => {
-        e.preventDefault()
-
-        if($('#amountVal').val() <= 0) {
-          alert("The amout value should be greater than 0")
-          return false
-        }
-        if(!$("[name=radioValue]:checked").val()) {
-          alert("Chosse a type of transaction")
-          return false
-        }
-
-        if($("[name=radioValue]:checked").val() === "transfer" ){
-          if($("#fromId").val() === "" || $("#toId").val() === "")
-          if($("#fromId").val() === $("#toId").val())
-          alert("Chosse a type of transaction")
-          return false
-        }
-
-        if($("[name=radioValue]:chacked").val() === "transfer"){
-          //pegar o balance de from e checar se eh maior ou igual ao valor da transacao
-          alert("SOORY! You dont have enough balance")
-        }
-        if($("[name=radioValue]:checked").val() === "withdraw"){
-          //pegaro o balance de account e chegar se eh maior ou igual ao valor da transacao
-          alert("SOORY! You dont have enough balance")
-        }
-
-        // if($("[name=radioValue]:checked").val() === "transfer" || $("[name=radioValue]:checked").val() === "withdraw"){
-          
-        //   if(!currentBalance >= transDetails.accountIdFrom)
-        //   alert("SOORY! You dont have enough balance")
-        // }
-
-      });
+       
 
 
     
