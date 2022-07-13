@@ -42,28 +42,28 @@
             <div id="account">
               <label for="">Account:</label>
 
-              <select id="accChangeId" class="accountWrapper"  required>
-                  <option value="Accounts">Accounts</option>
+              <select id="accChangeId" class="accountWrapper selected"  >
+                  <option value="">Accounts</option>
               </select>
 
             </div>
      
             <div id="fromFild" >
               <label for="">From:</label>
-              <select id="fromId" class="accountWrapper">
-                <option value="From">From</option>
+              <select id="fromId" class="accountWrapper selected">
+                <option value="">From</option>
               </select>
             </div>
   
             <div id="toFild" >
               <label for="">To:</label>
-              <select id="toId" class="accountWrapper">
-                <option value="To">To</option>
+              <select id="toId" class="accountWrapper selected">
+                <option value="">To</option>
               </select><br>
             </div>
           
             <label for="">Category:</label> 
-            <select id="chooseCategory" required>
+            <select id="chooseCategory" >
               <option value="" disabled selected>Choose a Category</option>
               <option name="optionNewCat" value="addNew">New Category</option>
             </select>
@@ -83,14 +83,15 @@
             <button>Add transaction</button>
           </form>
     
-          Account summary
-          <ul></ul>
+          Account summary:
+          <ul id="listSummary"></ul>
           Filter by account:
           <select id="filterAcc" class="accountWrapper">
-            <option value="Filter">Filter</option>
+            <option value="Filter" disabled selected>Select an account</option>
+            <option value="filterAll">Filter All</option>
           </select>
           <table class="tableData">
-            <tr>
+            <tr >
               <th>Id</th>
               <th>Username</th>
               <th>Transaction Type</th>
@@ -100,9 +101,10 @@
               <th>From</th>
               <th>To</th>
             </tr>
-            <tr>
-              
+            <tr class="accountInfos">
+
             </tr>
+        
           </table>
         </main>
       </div>

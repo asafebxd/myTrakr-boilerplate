@@ -28,11 +28,28 @@ class Transfer extends Transaction{
     this.accountIdFrom = accountIdFrom;
     this.accountIdTo = accountIdTo;
   }
+  get value() {
+    if(this.accountId === this.accountIdFrom){
+      return -this.amount;
+    }
+    return this.amount;
+  }
 } 
 
 const printDataTransfer = (transaction) => {
   transaction.forEach(transDetails => {
     console.log(transDetails.transType);
+
+    let newTransaction;
+    if(transaction.transType === 'deposit'){
+      newTransaction = new Deposit(transaction.amountVal, transaction.accountId);
+    }else if(transaction.transType === 'withdraw'){
+      newTransaction = new Withdrawal(transaction.amountVal, transaction.accountId);
+    }else {
+      newTransaction = new Transfer(transaction.amountVal, transaction.accountId, transaction.accountIdFrom, transaction.accountIdTo);
+    }
+
+
     let to = ""
     let from = ""
     let username = ""
@@ -48,7 +65,7 @@ const printDataTransfer = (transaction) => {
       }
     }
     $(".tableData").append(`
-  <tr>
+  <tr class="accountInfos">
     <td class="idWrap">${transDetails.id}</td>
     <td class="usernameWrap">${username}</td>
     <td class="transWrap">${transDetails.transType}</td>

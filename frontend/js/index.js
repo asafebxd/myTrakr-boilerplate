@@ -1,5 +1,3 @@
-// import transactions from "../../src/transactions";
-
 users = []
 
 $(() => {
@@ -9,7 +7,6 @@ $(() => {
     url: 'http://localhost:3000/accounts',
     dataType: 'json',
   }).done((data) => {
-    console.log('data ajax get', data);
     data.forEach(accounts => {
       const newAccount = new Account (  
         accounts.username,
@@ -18,13 +15,15 @@ $(() => {
       ) 
       $(".accountWrapper").append(`<option value = ${accounts.id}>${accounts.username}</option>`)
       users.push(newAccount)
+      $("#listSummary").append(`
+          <li id="${newAccount.username}">Account Name: ${newAccount.username} | Current Balance: <span>${newAccount.balance}</span></li>`);
+
         
     });
   });  
   
     $('#newAccount').on('submit', (e) => {
       e.preventDefault()
-      console.log('clicked') 
         const inValue = $("#accountInput").val();
         if (inValue === "") {
           alert("insert value")
@@ -32,9 +31,7 @@ $(() => {
         }
         // const inValue = $("[name=accountName]").val()
         let exist = false
-        console.log(users);
         for (let i = 0; i < users.length; i++ ) {
-          console.log(users[i].username);
           if (users[i].username === inValue) {
             exist = true
           }
@@ -43,7 +40,6 @@ $(() => {
           alert("The user already exist")
           return
         }
-        
 
         const newAccount = {
               username: inValue,
@@ -57,10 +53,16 @@ $(() => {
           dataType: 'json',
           contentType: 'application/json'
         }).done((data) => {
-          console.log('data ajax post', data);
-          users.push(data)
+          const newAccount = new Account(data.username,data.id, data.transactions)
+          users.push(newAccount);
           $(".accountWrapper").append(`<option value = ${data.id}>${data.username}</option>`)
+
+          $("#listSummary").append(`
+          <li id="${newAccount.username}">Account Name: ${newAccount.username} | Current Balance: <span>${newAccount.balance}</span></li>`);
+  
         });
+
+
       });
       
 
@@ -69,7 +71,6 @@ $(() => {
         url: 'http://localhost:3000/transactions',
         dataType: 'json',
       }).done((data) => {
-        console.log('data ajax get Trans', data);
         data.forEach(transaction => { 
           printDataTransfer(transaction)  
         })
@@ -80,7 +81,7 @@ $(() => {
         e.preventDefault() 
         const newTransaction = {
             category: $("#chooseCategory").val(),
-            transType: $("[name=radioValue").val(),
+            transType: $("[name=radioValue]:checked").val(),
             descripcion: $("#descVal").val(),
             amountVal: $("#amountVal").val(),
             accountId: $("#accChangeId").val(),// account ID for Deposits or Withdraws
@@ -88,8 +89,6 @@ $(() => {
             accountIdTo:$("#toId").val() // receiver ID if type = 'Transfer', otherwise null
             // all info from form
           }
-          console.log("new transaction",newTransaction)
-
           $.ajax({
             method: 'post',
             url: 'http://localhost:3000/transaction',
@@ -108,21 +107,27 @@ $(() => {
           });
         });
         
-
-      
         $("#filterAcc").on("change", (e) => {
           e.preventDefault();
           filterAcc = ""
           const filteredInfo = $("#filterAcc").val();
           console.log(filteredInfo)
+
+          // if (filteredInfo === "filterAll") {
+          //   data.forEach(transaction => { 
+          //     printDataTransfer(transaction)  
+          //   })
+          // }
           users.forEach(filterData  => {  
             // let username = ""
             // let to = ""
             // let from = ""
             if (filterData.id == filteredInfo) { 
-              filterAcc = filterData.transactions 
-
-            filterAcc.forEach(transaction => {
+              filterAcc = filterData.transactions   
+              
+              $(".accountInfos").remove() 
+              filterAcc.forEach(transaction => {
+                
                 $(".tableData").append(`
               <tr>
                 <td class="idWrap">${transaction.id}</td>
@@ -135,21 +140,19 @@ $(() => {
                 <td class="toWrap"></td>
               </tr>
               `)
-            }) 
-            } 
-         
-            console.log(filterAcc);
+            })
+              } 
         
           })
         })
-      
-
 
       $("[name=radioValue]").change(() => {
         if($("[name=radioValue]:checked").val() === "deposit" || $("[name=radioValue]:checked").val() === "withdraw"){
           $("#fromFild").css("display", "none");
           $("#toFild").css("display", "none");
           $("#account").css("display", "block");
+          $(".selected").val("").change()
+
         }else{
           $("#account").css("display", "none");
           $("#fromFild").css("display", "block");
@@ -171,9 +174,7 @@ $(() => {
       $("#newCatBtn").click(() =>{
         if($("#newCatInput").val() === ""){
           alert("Please insert a Name for a new Category")
-      }//else{
-      //   $("#newCategory").hide();
-      // }
+      }
 
      const newCategory = $('#newCatInput').val()
       $.ajax({
@@ -189,28 +190,52 @@ $(() => {
       })
 
       });
+const categories = []
+      $.ajax({
+        method: 'get',
+        url: 'http://localhost:3000/categories',
+        dataType: 'json',
+        contentType: 'application/JSON',
+      }).done((data) => {
+        data.forEach(category => {
+          categories.push(category);
+          $("#chooseCategory").prepend(`<option value=${category.name}>${category.name}</option>`);
+        })
+      });
 
-
+      console.log($("[name=radioValue]:checked"));
       $('#newTransaction').on('submit', (e) => {
         e.preventDefault()
-        console.log("clicked")
 
         if($('#amountVal').val() <= 0) {
-          alert("Chosse a value")
+          alert("The amout value should be greater than 0")
           return false
         }
-        if(!$("[name=radioValue]:checked")) {
-          alert("Chosse a value")
+        if(!$("[name=radioValue]:checked").val()) {
+          alert("Chosse a type of transaction")
           return false
         }
+
         if($("[name=radioValue]:checked").val() === "transfer" ){
           if($("#fromId").val() === "" || $("#toId").val() === "")
           if($("#fromId").val() === $("#toId").val())
+          alert("Chosse a type of transaction")
           return false
         }
 
-        // if($("[name=radioValue]:checked").val() === "transfer" || $("[name=radioValue]:checked").val() === "withdraw"){
+        if($("[name=radioValue]:chacked").val() === "transfer"){
+          //pegar o balance de from e checar se eh maior ou igual ao valor da transacao
+          alert("SOORY! You dont have enough balance")
+        }
+        if($("[name=radioValue]:checked").val() === "withdraw"){
+          //pegaro o balance de account e chegar se eh maior ou igual ao valor da transacao
+          alert("SOORY! You dont have enough balance")
+        }
 
+        // if($("[name=radioValue]:checked").val() === "transfer" || $("[name=radioValue]:checked").val() === "withdraw"){
+          
+        //   if(!currentBalance >= transDetails.accountIdFrom)
+        //   alert("SOORY! You dont have enough balance")
         // }
 
       });
