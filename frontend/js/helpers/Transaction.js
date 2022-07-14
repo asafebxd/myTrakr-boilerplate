@@ -1,7 +1,14 @@
 class Transaction {
-  constructor(amount, accountId) {
-    this.amount = amount;
-    this.accountId = accountId;
+  constructor(transaction) {
+    this.amountVal = transaction.amountVal;
+    this.accountId = transaction.accountId;
+    this.accountIdFrom = transaction.accountIdFrom;
+    this.accountIdTo = transaction.accountIdTo;
+    this.category = transaction.category;
+    this.id = transaction.id;
+    this.transType = transaction.transType;
+    this.descripcion = transaction.descripcion;
+
   }
   commit() {
     if (this.value < 0 && this.amount > this.account.balance) return;
@@ -12,42 +19,51 @@ class Transaction {
 
 class Withdrawal extends Transaction {
   get value() {
-    return -this.amount;
+    return -this.amountVal;
   }
 }
 
 class Deposit extends Transaction {
   get value() {
-    return this.amount;
+    return this.amountVal;
   }
 }
 
 class Transfer extends Transaction{
-  constructor (amount, accountId, accountIdFrom, accountIdTo){
-    super(amount, accountId);
-    this.accountIdFrom = accountIdFrom;
-    this.accountIdTo = accountIdTo;
-  }
   get value() {
     if(this.accountId === this.accountIdFrom){
-      return -this.amount;
+      return -this.amountVal;
     }
-    return this.amount;
+    return this.amountVal;
   }
 } 
 
-const printDataTransfer = (transaction) => {
-  transaction.forEach(transDetails => {
+const convertTransactions = function(transactions){
+  return transactions.map(transaction => {
+    if(transaction.transType === 'deposit'){
+      return new Deposit(transaction);
+    }else if(transaction.transType === 'withdraw'){
+      return new Withdrawal(transaction);
+    }else {
+      return new Transfer(transaction);
+    }
+
+  })
+}
+
+const printDataTransfer = (transactions) => {
+  return transactions.forEach(transDetails => {
     console.log(transDetails.transType);
 
-    let newTransaction;
-    if(transaction.transType === 'deposit'){
-      newTransaction = new Deposit(transaction.amountVal, transaction.accountId);
-    }else if(transaction.transType === 'withdraw'){
-      newTransaction = new Withdrawal(transaction.amountVal, transaction.accountId);
-    }else {
-      newTransaction = new Transfer(transaction.amountVal, transaction.accountId, transaction.accountIdFrom, transaction.accountIdTo);
-    }
+    // let newTransaction;
+    // if(transDetails.transType === 'deposit'){
+    //   newTransaction = new Deposit(transDetails.amountVal, transDetails.accountId);
+    // }else if(transDetails.transType === 'withdraw'){
+    //   newTransaction = new Withdrawal(transDetails.amountVal, transDetails.accountId);
+    // }else {
+    //   newTransaction = new Transfer(transDetails.amountVal, transDetails.accountId, transDetails.accountIdFrom, transDetails.accountIdTo);
+    // }
+    // console.log('newTransaction',newTransaction)
 
 
     let to = ""
@@ -76,6 +92,7 @@ const printDataTransfer = (transaction) => {
     <td class="toWrap">${to}</td>
   </tr>
   `)
+  // return newTransaction
   })
 
 }
