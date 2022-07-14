@@ -78,7 +78,7 @@ $(() => {
     })
 
       $('#newTransaction').on('submit', (e) => {
-        e.preventDefault() 
+        e.preventDefault()
         const newTransaction = {
             category: $("#chooseCategory").val(),
             transType: $("[name=radioValue]:checked").val(),
@@ -89,6 +89,58 @@ $(() => {
             accountIdTo:$("#toId").val() // receiver ID if type = 'Transfer', otherwise null
             // all info from form
           }
+          console.log(newTransaction)
+
+          let currentBalance = ""
+
+          if($("[name=radioValue]:checked").val() === "transfer"){
+            let username = ""
+            users.forEach(user => {
+              if(user.id == $("#fromId").val()){
+                username = user.username
+              }
+            })
+
+            currentBalance = Number($(`#${username} span`).text())
+
+            if(currentBalance < Number($("#amountVal").val()))
+            alert("SOORY! You dont have enough balance")
+          }
+          if($("[name=radioValue]:checked").val() === "withdraw"){
+            let username = ""
+            users.forEach(user => {
+              if(user.id == $("#accChangeId").val()){
+                username = user.username
+              }
+            })
+            currentBalance = Number($(`#${username} span`).text())
+
+            if(currentBalance < Number($("#amountVal").val()))
+            alert("SOORY! You dont have enough balance")
+          }
+
+          if($('#amountVal').val() <= 0) {
+            alert("The amout value should be greater than 0")
+            return
+          }
+
+          if(!$("[name=radioValue]:checked").val()) {
+            alert("Chosse a type of transaction")
+            return 
+          }
+
+          if($("[name=radioValue]:checked").val() === "transfer" ){
+            if($("#fromId").val() === "" || $("#toId").val() === ""){
+              alert("Chosse one account before transfer")
+              return
+            }
+            if($("#fromId").val() === $("#toId").val()){
+              alert("From can not be the same as to")
+              return
+            }
+      
+          }
+
           $.ajax({
             method: 'post',
             url: 'http://localhost:3000/transaction',
@@ -101,52 +153,91 @@ $(() => {
               for (let i = 0; i < users.length; i++) {
                 if (users[i].id == data.accountId) {
                   users[i].transactions.push(data)
+
                 } 
               }
+
+              const currentBalance = $(`#${username} span`).text()
+              $(`#${username} span`).text(Number(currentBalance) + Number(newTransaction.value))
             console.log(users)
           });
         });
         
         $("#filterAcc").on("change", (e) => {
           e.preventDefault();
+          $(".accountInfos").remove()
           filterAcc = ""
-          const filteredInfo = $("#filterAcc").val();
-          console.log(filteredInfo)
+          const selectedUserId = $("#filterAcc").val();
+          console.log(selectedUserId)
 
-          // if (filteredInfo === "filterAll") {
-          //   data.forEach(transaction => { 
-          //     printDataTransfer(transaction)  
-          //   })
-          // }
-          users.forEach(filterData  => {  
-            // let username = ""
-            // let to = ""
-            // let from = ""
-            if (filterData.id == filteredInfo) { 
-              filterAcc = filterData.transactions   
-              
-              $(".accountInfos").remove() 
+          if (selectedUserId === "filterAll") {
+            users.forEach(user => {
+                printDataTransfer(user.transactions)
+            })
+          }
+          users.forEach(user  => {  
+            let account = ""
+            let to = ""
+            let from = ""
+            if (user.id == selectedUserId) { 
+              filterAcc = user.transactions
+              //clear table
+               
               filterAcc.forEach(transaction => {
-                
+                account = users.find(user => {
+                  if(user.id == transaction.accountId){
+                    return user;
+                  }
+                })
+                from = users.find(user => {
+                  if(user.id == transaction.accountIdFrom){
+                    return user;
+                  }
+                })
+                to = users.find(user => {
+                  if(user.id == transaction.accountIdTo){
+                    return user;
+                  }
+                })
+                console.log('from username', from)
+
                 $(".tableData").append(`
-              <tr>
+              <tr class="accountInfos">
                 <td class="idWrap">${transaction.id}</td>
-                <td class="usernameWrap"></td>
+                <td class="usernameWrap">${account && account.username}</td>
                 <td class="transWrap">${transaction.transType}</td>
                 <td class="catWrap">${transaction.category}</td>
                 <td class="descWrap">${transaction.descripcion}</td>  
                 <td class="amountWrap">${transaction.amountVal}</td>
-                <td class="fromWrap"></td>
-                <td class="toWrap"></td>
+                <td class="fromWrap">${from && from.username}</td>
+                <td class="toWrap">${to && to.username}</td>
               </tr>
               `)
-            })
-              } 
-        
+              })  
+            
+              // for (let i = 0; i < users.length; i++) {
+              //   if (users[i].id == filterAcc.accountId) {
+              //     username = users[i].username
+              //   }
+              //   if (users[i].id == filterAcc.accountIdFrom) {
+              //     from = users[i].username
+              //   }
+              //   if (users[i].id == filterAcc.accountIdTo) {
+              //     to = users[i].username
+
+              //   }
+              //   console.log(users[i]);
+              // }  
+
+              console.log(filterAcc);
+              
+             
+              // } 
+            }   
           })
         })
 
-      $("[name=radioValue]").change(() => {
+      $("[name=radioValue]").click(() => {
         if($("[name=radioValue]:checked").val() === "deposit" || $("[name=radioValue]:checked").val() === "withdraw"){
           $("#fromFild").css("display", "none");
           $("#toFild").css("display", "none");
@@ -203,42 +294,7 @@ const categories = []
         })
       });
 
-      console.log($("[name=radioValue]:checked"));
-      $('#newTransaction').on('submit', (e) => {
-        e.preventDefault()
-
-        if($('#amountVal').val() <= 0) {
-          alert("The amout value should be greater than 0")
-          return false
-        }
-        if(!$("[name=radioValue]:checked").val()) {
-          alert("Chosse a type of transaction")
-          return false
-        }
-
-        if($("[name=radioValue]:checked").val() === "transfer" ){
-          if($("#fromId").val() === "" || $("#toId").val() === "")
-          if($("#fromId").val() === $("#toId").val())
-          alert("Chosse a type of transaction")
-          return false
-        }
-
-        if($("[name=radioValue]:chacked").val() === "transfer"){
-          //pegar o balance de from e checar se eh maior ou igual ao valor da transacao
-          alert("SOORY! You dont have enough balance")
-        }
-        if($("[name=radioValue]:checked").val() === "withdraw"){
-          //pegaro o balance de account e chegar se eh maior ou igual ao valor da transacao
-          alert("SOORY! You dont have enough balance")
-        }
-
-        // if($("[name=radioValue]:checked").val() === "transfer" || $("[name=radioValue]:checked").val() === "withdraw"){
-          
-        //   if(!currentBalance >= transDetails.accountIdFrom)
-        //   alert("SOORY! You dont have enough balance")
-        // }
-
-      });
+       
 
 
     
