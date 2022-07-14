@@ -10,7 +10,8 @@ $(() => {
     data.forEach(accounts => {
       const newAccount = new Account (  
         accounts.username,
-        accounts.id
+        accounts.id,
+        accounts.transactions
       ) 
       $(".accountWrapper").append(`<option value = ${accounts.id}>${accounts.username}</option>`)
       users.push(newAccount)
@@ -71,34 +72,7 @@ $(() => {
         dataType: 'json',
       }).done((data) => {
         data.forEach(transaction => { 
-          transaction.forEach(transDetails => {
-            let to = ""
-            let from = ""
-            let username = ""
-            for (let i = 0; i < users.length; i++) {
-              if (users[i].id == transDetails.accountId) {
-                username = users[i].username
-              }
-              if (users[i].id == transDetails.accountIdFrom) {
-                from = users[i].username
-              }
-              if (users[i].id == transDetails.accountIdTo) {
-                to = users[i].username
-              }
-            }
-            $(".tableData").append(`
-          <tr>
-            <td class="idWrap">${transDetails.id}</td>
-            <td class="usernameWrap">${username}</td>
-            <td class="transWrap">${transDetails.transType}</td>
-            <td class="catWrap">${transDetails.category}</td>
-            <td class="descWrap">${transDetails.descripcion}</td>  
-            <td class="amountWrap">${transDetails.amountVal}</td>
-            <td class="fromWrap">${from}</td>
-            <td class="toWrap">${to}</td>
-          </tr>
-          `)
-          })
+          printDataTransfer(transaction)  
         })
       });  
     })
@@ -174,80 +148,92 @@ $(() => {
             dataType: 'json',
             contentType: 'application/json'
           }).done((data) => {
-            data.forEach(transaction => {
-              console.log(data)
-              let newTransaction;
-              if(transaction.transType === 'deposit'){
-                newTransaction = new Deposit(transaction.amountVal, transaction.accountId);
-              }else if(transaction.transType === 'withdraw'){
-                newTransaction = new Withdrawal(transaction.amountVal, transaction.accountId);
-              }else {
-                newTransaction = new Transfer(transaction.amountVal, transaction.accountId, transaction.accountIdFrom, transaction.accountIdTo);
-              }
+            console.log('data transactions ajax post', data);
+              printDataTransfer(data)
+              for (let i = 0; i < users.length; i++) {
+                if (users[i].id == data.accountId) {
+                  users[i].transactions.push(data)
 
-              let from = ""
-              let to = ""
-              let username = ""
-              for (let i = 0; i < users.length; i++) {
-                if (users[i].id == transaction.accountId) {
-                  username = users[i].username
-                }
-                if (users[i].id == transaction.accountIdFrom) {
-                  from = users[i].username
-                }
-                if (users[i].id == transaction.accountIdTo) {
-                  to = users[i].username
-                }
-              }
-              $(".tableData").append(`
-                const currentBalance = $(${username} span).text()  <tr>
-                <td class="idWrap">${transaction.id}</td>
-                <td class="usernameWrap">${username}</td>
-                <td class="transWrap">${transaction.transType}</td>
-                <td class="catWrap">${transaction.category}</td>
-                <td class="descWrap">${transaction.descripcion}</td>  
-                <td class="amountWrap">${transaction.amountVal}</td>
-                <td class="fromWrap">${from}</td>
-                <td class="toWrap">${to}</td>
-              </tr>
-              `)
-              for (let i = 0; i < users.length; i++) {
-                if (users[i].id == transaction.accountId) {
-                  users[i].transactions.push(transaction)
                 } 
               }
-          
+
               const currentBalance = $(`#${username} span`).text()
               $(`#${username} span`).text(Number(currentBalance) + Number(newTransaction.value))
-       
-            });
+            console.log(users)
           });
         });
         
         $("#filterAcc").on("change", (e) => {
           e.preventDefault();
+          $(".accountInfos").remove()
           filterAcc = ""
-          const filteredInfo = $("#filterAcc").val();
-          users.forEach(filterData  => {  
-            let username = ""
+          const selectedUserId = $("#filterAcc").val();
+          console.log(selectedUserId)
+
+          if (selectedUserId === "filterAll") {
+            users.forEach(user => {
+                printDataTransfer(user.transactions)
+            })
+          }
+          users.forEach(user  => {  
+            let account = ""
             let to = ""
             let from = ""
-            if (filterData.id == filteredInfo) {
-              filterAcc = filterData.transactions
-            }
-            console.log(filterAcc);
-            $(".tableData").append(`
-            <tr>
-              <td class="idWrap">${filterData.id}</td>
-              <td class="usernameWrap">${username}</td>
-              <td class="transWrap">${filterData.transType}</td>
-              <td class="catWrap">${filterData.category}</td>
-              <td class="descWrap">${filterData.descripcion}</td>  
-              <td class="amountWrap">${filterData.amountVal}</td>
-              <td class="fromWrap">${from}</td>
-              <td class="toWrap">${to}</td>
-            </tr>
-            `)
+            if (user.id == selectedUserId) { 
+              filterAcc = user.transactions
+              //clear table
+               
+              filterAcc.forEach(transaction => {
+                account = users.find(user => {
+                  if(user.id == transaction.accountId){
+                    return user;
+                  }
+                })
+                from = users.find(user => {
+                  if(user.id == transaction.accountIdFrom){
+                    return user;
+                  }
+                })
+                to = users.find(user => {
+                  if(user.id == transaction.accountIdTo){
+                    return user;
+                  }
+                })
+                console.log('from username', from)
+
+                $(".tableData").append(`
+              <tr class="accountInfos">
+                <td class="idWrap">${transaction.id}</td>
+                <td class="usernameWrap">${account && account.username}</td>
+                <td class="transWrap">${transaction.transType}</td>
+                <td class="catWrap">${transaction.category}</td>
+                <td class="descWrap">${transaction.descripcion}</td>  
+                <td class="amountWrap">${transaction.amountVal}</td>
+                <td class="fromWrap">${from && from.username}</td>
+                <td class="toWrap">${to && to.username}</td>
+              </tr>
+              `)
+              })  
+            
+              // for (let i = 0; i < users.length; i++) {
+              //   if (users[i].id == filterAcc.accountId) {
+              //     username = users[i].username
+              //   }
+              //   if (users[i].id == filterAcc.accountIdFrom) {
+              //     from = users[i].username
+              //   }
+              //   if (users[i].id == filterAcc.accountIdTo) {
+              //     to = users[i].username
+
+              //   }
+              //   console.log(users[i]);
+              // }  
+
+              console.log(filterAcc);
+              
+             
+              // } 
+            }   
           })
         })
 
